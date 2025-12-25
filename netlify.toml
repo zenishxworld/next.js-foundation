@@ -1,0 +1,31 @@
+[functions]
+directory = "netlify/functions"
+node_bundler = "esbuild"
+external_node_modules = ["googleapis"]
+
+# Redirect Netlify subdomain to main domain
+[[redirects]]
+from = "https://apexdeploy.netlify.app/*"
+to = "https://apexdeploy.in/:splat"
+status = 301
+force = true
+
+# Static file rules - MUST come first
+[[redirects]]
+from = "/sitemap.xml"
+to = "/sitemap.xml"
+status = 200
+force = true
+
+[[redirects]]
+from = "/robots.txt"
+to = "/robots.txt"
+status = 200
+force = true
+
+# Route Netlify production requests to the serverless function
+[[redirects]]
+from = "/api/internships"
+to = "/.netlify/functions/internships"
+status = 200
+force = true

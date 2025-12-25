@@ -1,0 +1,12 @@
+# Static files FIRST with force flag
+/sitemap.xml! /sitemap.xml 200
+/robots.txt! /robots.txt 200
+
+# API routes
+/api/* /.netlify/functions/:splat 200
+
+# Canonical redirect
+https://www.apexdeploy.in/* https://apexdeploy.in/:splat 301!
+
+# SPA fallback MUST be LAST
+/* /index.html 200
