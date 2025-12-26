@@ -15,19 +15,18 @@ import PetProject from "./pages/PetProject";
 import TechDetails from "./pages/TechDetails";
 import DevelopmentProcess from "./pages/DevelopmentProcess";
 import About from "./pages/About";
+import Work from "./pages/Work";
 import Careers from "./pages/Careers";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import SplashLoader from "./components/SplashLoader";
 import Internship from "./pages/Internship";
-// import Blog from "./pages/Blog";
-// import BlogPostDetail from "./pages/BlogPostDetail";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowSplash(false), 1400); // ~1.4s aesthetic splash
+    const t = setTimeout(() => setShowSplash(false), 1400);
     return () => clearTimeout(t);
   }, []);
 
@@ -40,6 +39,10 @@ const App = () => {
           <SplashLoader visible={showSplash} />
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/work" element={<Work />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/internship" element={<Internship />} />
             <Route path="/projects/auditx" element={<FireCatProject />} />
             <Route path="/projects/elite-construction" element={<SportRetailProject />} />
             <Route path="/projects/creative-portfolio" element={<WorkwearProject />} />
@@ -47,12 +50,7 @@ const App = () => {
             <Route path="/projects/inventory-billing" element={<PetProject />} />
             <Route path="/tech-details" element={<TechDetails />} />
             <Route path="/development-process" element={<DevelopmentProcess />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/internship" element={<Internship />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            {/* <Route path="/blog" element={<Blog />} /> */}
-            {/* <Route path="/blog/:slug" element={<BlogPostDetail />} /> */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
