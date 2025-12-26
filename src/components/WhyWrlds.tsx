@@ -1,214 +1,125 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Layers, BarChart, AlertTriangle, Clock4, Rocket, Zap, Sparkles, ArrowRight, Award, Target, Shield, ChartBar } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { BarChart, AlertTriangle, Clock4, Rocket, Zap, Sparkles, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const AnimatedCounter = ({
-  end,
-  duration = 2000,
-  prefix = "",
-  suffix = "",
-  decimals = 0
-}: {
-  end: number;
-  duration?: number;
-  prefix?: string;
-  suffix?: string;
-  decimals?: number;
-}) => {
+const AnimatedCounter = ({ end, suffix = "", prefix = "" }: { end: number; suffix?: string; prefix?: string }) => {
   const [count, setCount] = useState(0);
   const countRef = useRef(null);
-  const inView = useInView(countRef, {
-    once: true,
-    margin: "-100px"
-  });
+  const inView = useInView(countRef, { once: true, margin: "-100px" });
+  
   useEffect(() => {
     if (!inView) return;
-    let startTime: number;
-    let animationFrame: number;
-    const startAnimation = (timestamp: number) => {
-      startTime = timestamp;
-      animate(timestamp);
-    };
-    const animate = (timestamp: number) => {
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const currentCount = progress * end;
-      setCount(currentCount);
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
+    let start = 0;
+    const duration = 2000;
+    const increment = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
       }
-    };
-    animationFrame = requestAnimationFrame(startAnimation);
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-    };
-  }, [end, duration, inView]);
-  return <span ref={countRef} className="font-bold tabular-nums">
-      {prefix}{count.toFixed(decimals)}{suffix}
-    </span>;
+    }, 16);
+    return () => clearInterval(timer);
+  }, [end, inView]);
+
+  return <span ref={countRef} className="font-bold">{prefix}{count}{suffix}</span>;
 };
 
 const WhyWrlds = () => {
-  const isMobile = useIsMobile();
-  const containerVariants = {
-    hidden: {
-      opacity: 0
-    },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.3,
-        duration: 0.8
-      }
-    }
-  };
-  const itemVariants = {
-    hidden: {
-      y: 20,
-      opacity: 0
-    },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6
-      }
-    }
-  };
-  return <section id="why-apexdeploy" className="relative py-16 md:py-24 bg-white overflow-hidden">
-      <span id="why-apexdeploy" className="sr-only" aria-hidden="true"></span>
-      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div className="text-center mb-12 md:mb-16" initial="hidden" whileInView="visible" viewport={{
-        once: true,
-        margin: "-100px"
-      }} variants={containerVariants}>
-          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
+  return (
+    <section className="py-24 md:py-32 bg-secondary/30">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
             Why ApexDeploy?
-          </motion.h2>
-          <motion.p variants={itemVariants} className="text-gray-600 text-lg max-w-3xl mx-auto">
-            In an industry where complexity leads to failure, we bring simplicity and expertise to ensure your success
-          </motion.p>
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            We bring simplicity and expertise to ensure your success
+          </p>
         </motion.div>
-        
-        <motion.div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16" initial="hidden" whileInView="visible" viewport={{
-        once: true,
-        margin: "-100px"
-      }} variants={containerVariants}>
-          <motion.div variants={itemVariants} className="bg-gray-100 p-6 rounded-xl border border-gray-200 text-center hover:bg-gray-200 transition-all">
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
-              <BarChart className="w-8 h-8 text-gray-700" />
-            </div>
-            <h3 className="text-gray-900 text-2xl lg:text-3xl font-bold mb-3">
-              <AnimatedCounter end={2} suffix="+" /> Years
-            </h3>
-            <p className="text-gray-700">Building connected products across industries with multiple successful launches generating revenue</p>
-          </motion.div>
-          
-          <motion.div variants={itemVariants} className="bg-gray-100 p-6 rounded-xl border border-gray-200 text-center hover:bg-gray-200 transition-all">
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="w-8 h-8 text-gray-700" />
-            </div>
-            <h3 className="text-gray-900 text-2xl lg:text-3xl font-bold mb-3">
-              <AnimatedCounter end={60} suffix="%" /> 
-            </h3>
-            <p className="text-gray-700">
-              of projects face delays at the initial stage due to fragmented teams and poor coordination between key disciplines.
-            </p>
-          </motion.div>
-          
-          <motion.div variants={itemVariants} className="bg-gray-100 p-6 rounded-xl border border-gray-200 text-center hover:bg-gray-200 transition-all">
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
-              <Clock4 className="w-8 h-8 text-gray-700" />
-            </div>
-            <h3 className="text-gray-900 text-2xl lg:text-3xl font-bold mb-3">
-              <AnimatedCounter end={80} suffix="%" />
-            </h3>
-            <p className="text-gray-700">
-              Increase in time-to-market for complex technical solutions, leading to competitive disadvantage and costly delays.
-            </p>
-          </motion.div>
-        </motion.div>
-        
-        <motion.div className="mb-12" initial="hidden" whileInView="visible" viewport={{
-          once: true,
-          margin: "-100px"
-        }} variants={containerVariants}>
-          <motion.div variants={itemVariants} className="text-center mb-8">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-              What ApexDeploy Does for You
-            </h3>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              We transform your ideas into market-ready solutions with tangible benefits for your business
-            </p>
-          </motion.div>
-          
-          <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <motion.div variants={itemVariants} className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-              <div className="flex items-start">
-                <div className="bg-gray-200 rounded-full p-3 mr-4">
-                  <BarChart className="w-6 h-6 text-gray-700" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-2">New Revenue Products</h4>
-                  <p className="text-gray-700">Create high-margin, sensor-enabled products for new revenue streams.</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div variants={itemVariants} className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-              <div className="flex items-start">
-                <div className="bg-gray-200 rounded-full p-3 mr-4">
-                  <Sparkles className="w-6 h-6 text-gray-700" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-2">Innovation That Attracts</h4>
-                  <p className="text-gray-700">Break through to dream clients with tech that makes you stand out.</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div variants={itemVariants} className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-              <div className="flex items-start">
-                <div className="bg-gray-200 rounded-full p-3 mr-4">
-                  <Zap className="w-6 h-6 text-gray-700" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-2">Comfort-Zone Development</h4>
-                  <p className="text-gray-700">We develop frontier tech while you stay in your comfort zone.</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div variants={itemVariants} className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all">
-              <div className="flex items-start">
-                <div className="bg-gray-200 rounded-full p-3 mr-4">
-                  <Rocket className="w-6 h-6 text-gray-700" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-2">Brand-Defining Leaps</h4>
-                  <p className="text-gray-700">We enable strategic software and deployment leaps that define your brand's future.</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-          
-          <motion.div variants={itemVariants} className="text-center mt-10">
-            <Link 
-              to="/development-process" 
-              onClick={() => window.scrollTo(0, 0)}
-              className="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all group"
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+          {[
+            { icon: <BarChart className="w-6 h-6" />, value: 2, suffix: "+", label: "Years building products" },
+            { icon: <AlertTriangle className="w-6 h-6" />, value: 60, suffix: "%", label: "Projects saved from delays" },
+            { icon: <Clock4 className="w-6 h-6" />, value: 80, suffix: "%", label: "Faster time-to-market" },
+          ].map((stat, index) => (
+            <motion.div 
+              key={index}
+              className="p-8 rounded-2xl bg-card border border-border/50 text-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              Learn more about our structured development process
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
+              <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center text-foreground mx-auto mb-4">
+                {stat.icon}
+              </div>
+              <div className="text-4xl font-display font-bold text-foreground mb-2">
+                <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+              </div>
+              <p className="text-muted-foreground text-sm">{stat.label}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Benefits */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[
+            { icon: <BarChart className="w-5 h-5" />, title: "New Revenue Products", desc: "Create high-margin, sensor-enabled products for new revenue streams." },
+            { icon: <Sparkles className="w-5 h-5" />, title: "Innovation That Attracts", desc: "Break through to dream clients with tech that makes you stand out." },
+            { icon: <Zap className="w-5 h-5" />, title: "Comfort-Zone Development", desc: "We develop frontier tech while you stay in your comfort zone." },
+            { icon: <Rocket className="w-5 h-5" />, title: "Brand-Defining Leaps", desc: "Strategic software leaps that define your brand's future." },
+          ].map((item, index) => (
+            <motion.div 
+              key={index}
+              className="p-6 rounded-2xl bg-card border border-border/50 flex items-start gap-4"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+            >
+              <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-foreground shrink-0">
+                {item.icon}
+              </div>
+              <div>
+                <h4 className="text-lg font-display font-bold text-foreground mb-1">{item.title}</h4>
+                <p className="text-muted-foreground text-sm">{item.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div 
+          className="text-center mt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+        >
+          <Link 
+            to="/development-process" 
+            onClick={() => window.scrollTo(0, 0)}
+            className="group inline-flex items-center gap-2 px-6 py-3 bg-secondary text-foreground rounded-full 
+                       hover:bg-muted transition-colors"
+          >
+            Learn about our process
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </motion.div>
       </div>
-    </section>;
+    </section>
+  );
 };
 
 export default WhyWrlds;

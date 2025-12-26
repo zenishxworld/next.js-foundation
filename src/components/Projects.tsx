@@ -1,57 +1,52 @@
-
 import { useState, useRef, useEffect, TouchEvent } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
 
 const projects = [
   {
     id: 1,
     title: "Web3 Tool",
     brand: "AuditX Security System",
-    description: "AI-based security tool offering Smart Contract Auditing, Token Scanning, and Wallet Inspection for comprehensive Web3 security and real-time analysis.",
-    tags: ["Web3 Security", "Smart Contracts", "Token Analysis", "Wallet Monitoring"],
+    description: "AI-based security tool offering Smart Contract Auditing, Token Scanning, and Wallet Inspection for comprehensive Web3 security.",
+    tags: ["Web3 Security", "Smart Contracts", "AI"],
     imageUrl: "/lovable-uploads/ax.png",
-    isFeatured: true,
     link: "/projects/auditx",
-    // details: `
-    //   FireCat Group aimed to enhance safety in high-risk environments. WRLDS Technologies provided the 6th SENSE solution with secure real-time data transmission, high-quality sensors resistant to extreme conditions, integrated AI-powered clothing, and a centralized control unit. Features include Man Down Alarm, GPS positioning, vital sign monitoring, and Panic Button. Benefits: life-saving technology, machine learning preventing false alarms, durable hardware with 7-10 year lifespan, washable sensors, and Plug & Play installation with 12-20 hours of operation per charge.
-    // `
   },
   {
     id: 2,
-    title: "ELITE-Construction Company",
-    brand: "Smart Construction Web Portal",
-    description: "Website modernization for a local construction firm, featuring a responsive design, dynamic project gallery, and CMS-ready backend.",
-    tags: ["Construction", "Website Modernization", "Real Estate", "Project Gallery"],
+    title: "Construction Portal",
+    brand: "Smart Construction",
+    description: "Website modernization for a construction firm, featuring responsive design, dynamic project gallery, and CMS-ready backend.",
+    tags: ["Website", "Real Estate", "CMS"],
     imageUrl: "/lovable-uploads/smart-construction-cover.jpg",
     link: "/projects/elite-construction"
   },
   {
     id: 3,
-    title: "Creative Multimedia & Coaching Portfolio",
-    brand: "SATYAJEET SHINDE",
-    description: "Showcasing music production, photography, filmography, and expert IELTS coaching. Designed to be interactive and visually appealing for clients and students.",
-    tags: ["Music Production", "Photography", "Filmography", "IELTS Coaching"],
+    title: "Multimedia Portfolio",
+    brand: "Creative Agency",
+    description: "Showcasing music production, photography, filmography, and coaching. Interactive and visually appealing design.",
+    tags: ["Portfolio", "Creative", "Music"],
     imageUrl: "/lovable-uploads/sspp.png",
     link: "/projects/creative-portfolio"
   },
   {
     id: 4,
-    title: "MT5 Trading Automation Bot",
-    brand: "PROFESSIONAL TRADER CLIENT",
-    description: "Custom Expert Advisor (EA) developed for MT5. Aims to autonomously execute trades in forex and futures markets based on multi-timeframe analysis and automated bias detection.",
-    tags: ["Alogoritham Trading", "Automation", "MT5 Expert Advisor", "Forex & Futures"],
+    title: "Trading Automation",
+    brand: "MT5 Bot",
+    description: "Custom Expert Advisor for MT5. Autonomously executes trades based on multi-timeframe analysis.",
+    tags: ["Automation", "Trading", "Forex"],
     imageUrl: "/lovable-uploads/c30e0487-2fa0-41d1-9a0b-699cb2855388.png",
     link: "/projects/trading-bot"
   },
   {
     id: 5,
-    title: "Inventory & Billing Dashboard",
-    brand: "Bhavya Enterprices",
-    description: "Smart automation for a local wholesale business, replacing manual paper/Excel-based processes with a digital system for real-time stock, billing, and customer management.",
-    tags: ["Retail Automation", "Business ERP", "Inventory Management", "Billing System"],
+    title: "Inventory System",
+    brand: "Bhavya Enterprises",
+    description: "Smart automation replacing manual processes with a digital system for real-time stock and billing.",
+    tags: ["ERP", "Automation", "Billing"],
     imageUrl: "/lovable-uploads/d5ce901e-2ce0-4f2a-bce1-f0ca5d6192df.png",
     link: "/projects/inventory-billing"
   }
@@ -60,7 +55,6 @@ const projects = [
 const Projects = () => {
   const [activeProject, setActiveProject] = useState(0);
   const projectsRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -84,11 +78,7 @@ const Projects = () => {
         const entry = entries[0];
         setIsInView(entry.isIntersecting);
       },
-      {
-        root: null,
-        threshold: 0.1,
-        rootMargin: "0px 0px -5% 0px",
-      }
+      { threshold: 0.1 }
     );
 
     if (projectsRef.current) {
@@ -109,157 +99,132 @@ const Projects = () => {
 
   const onTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-    
     const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-    
-    if (isLeftSwipe) {
+    if (distance > minSwipeDistance) {
       setActiveProject(prev => (prev + 1) % projects.length);
-    } else if (isRightSwipe) {
+    } else if (distance < -minSwipeDistance) {
       setActiveProject(prev => (prev - 1 + projects.length) % projects.length);
     }
   };
 
-  const getCardAnimationClass = (index: number) => {
-    if (index === activeProject) return "scale-100 opacity-100 z-20";
-    if (index === (activeProject + 1) % projects.length) return "translate-x-[40%] scale-95 opacity-60 z-10";
-    if (index === (activeProject - 1 + projects.length) % projects.length) return "translate-x-[-40%] scale-95 opacity-60 z-10";
-    return "scale-90 opacity-0";
-  };
-  
-  return <section id="projects" ref={projectsRef} className="bg-white py-[50px] w-full">
-      <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className={`text-center mb-10 max-w-3xl mx-auto transition-all duration-1000 ${isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="inline-block mb-2 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
-            Customer Cases
-          </div>
-          <h2 className="text-3xl font-bold mb-3">
-            Connected Products in Market
+  return (
+    <section id="projects" ref={projectsRef} className="py-24 md:py-32 bg-background">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="pill mb-6">Recent Case Studies</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
+            Products in Market
           </h2>
-          <p className="text-gray-600">
-            See how we've turned ambitious product visions into market-ready solutions generating real revenue across multiple industries.
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            See how we've turned ambitious visions into market-ready solutions generating real revenue.
           </p>
-          {isMobile && (
-            <div className="flex items-center justify-center mt-4 animate-pulse-slow">
-              <div className="flex items-center text-blue-500">
-                <ChevronLeft size={16} />
-                <p className="text-sm mx-1">Swipe to navigate</p>
-                <ChevronRight size={16} />
-              </div>
-            </div>
-          )}
-        </div>
-        
+        </motion.div>
+
+        {/* Projects Grid */}
         <div 
-          className="relative h-[550px] overflow-hidden" 
-          onMouseEnter={() => setIsHovering(true)} 
+          className="relative"
+          onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
-          ref={carouselRef}
         >
-          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center">
-            {projects.map((project, index) => (
-              <div 
-                key={project.id} 
-                className={`absolute top-0 w-full max-w-md transform transition-all duration-500 ${getCardAnimationClass(index)}`} 
-                style={{ transitionDelay: `${index * 50}ms` }}
-              >
-                <Card className="overflow-hidden h-[500px] border border-gray-100 shadow-sm hover:shadow-md flex flex-col">
-                  <div 
-                    className="relative bg-black p-6 flex items-center justify-center h-48 overflow-hidden"
-                    style={{
-                      backgroundImage: `url(${project.imageUrl})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center'
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-black/50"></div>
-                    <div className="relative z-10 flex flex-col items-center justify-center">
-                      <h3 className="text-2xl font-bold text-white mb-2">{project.brand.toUpperCase()}</h3>
-                      <div className="w-12 h-1 bg-white mb-2"></div>
-                      <p className="text-white/90 text-sm">{project.title}</p>
-                    </div>
-                  </div>
-                  
-                  <CardContent className="p-6 flex flex-col flex-grow">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-bold mb-1 text-gray-800 group-hover:text-gray-500 transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-gray-500 text-sm font-medium">{project.brand}</p>
-                    </div>
-                    
-                    <p className="text-gray-600 text-sm mb-4 flex-grow">{project.description}</p>
-                    
-                    <div className="mt-auto">
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.tags.map((tag, idx) => (
-                          <span 
-                            key={idx} 
-                            className="px-2 py-1 bg-gray-50 text-gray-600 rounded-full text-xs animate-pulse-slow" 
-                            style={{ animationDelay: `${idx * 300}ms` }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      
-                      <Link 
-                        to={project.link} 
-                        className="text-gray-500 flex items-center hover:underline relative overflow-hidden group"
-                        onClick={() => {
-                          if (project.link.startsWith('/')) {
-                            window.scrollTo(0, 0);
-                          }
-                        }}
-                      >
-                        <span className="relative z-10">{"Learn more about " + project.title}</span>
-                        <ArrowRight className="ml-2 w-4 h-4 relative z-10 transition-transform group-hover:translate-x-1" />
-                        <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-gray-500 transition-all duration-300 group-hover:w-full"></span>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </div>
-          
-          {!isMobile && (
-            <>
-              <button 
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center text-gray-500 hover:bg-white z-30 shadow-md transition-all duration-300 hover:scale-110" 
-                onClick={() => setActiveProject(prev => (prev - 1 + projects.length) % projects.length)}
-                aria-label="Previous project"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              
-              <button 
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/80 rounded-full flex items-center justify-center text-gray-500 hover:bg-white z-30 shadow-md transition-all duration-300 hover:scale-110" 
-                onClick={() => setActiveProject(prev => (prev + 1) % projects.length)}
-                aria-label="Next project"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </>
-          )}
-          
-          <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center space-x-3 z-30">
-            {projects.map((_, idx) => (
-              <button 
-                key={idx} 
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${activeProject === idx ? 'bg-gray-500 w-5' : 'bg-gray-200 hover:bg-gray-300'}`} 
-                onClick={() => setActiveProject(idx)}
-                aria-label={`Go to project ${idx + 1}`}
+          {/* Main Featured Project */}
+          <motion.div 
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"
+            key={activeProject}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Image */}
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card">
+              <img 
+                src={projects[activeProject].imageUrl}
+                alt={projects[activeProject].brand}
+                className="w-full h-full object-cover"
               />
-            ))}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col justify-center">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {projects[activeProject].tags.map((tag, idx) => (
+                  <span 
+                    key={idx}
+                    className="px-3 py-1 text-xs bg-secondary text-muted-foreground rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              
+              <h3 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-2">
+                {projects[activeProject].brand}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-2">{projects[activeProject].title}</p>
+              <p className="text-muted-foreground mb-8">{projects[activeProject].description}</p>
+              
+              <Link 
+                to={projects[activeProject].link}
+                className="group inline-flex items-center gap-2 text-foreground font-medium hover-underline w-fit"
+                onClick={() => window.scrollTo(0, 0)}
+              >
+                View Case Study
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* Navigation */}
+          <div className="flex items-center justify-center gap-6">
+            <button 
+              onClick={() => setActiveProject(prev => (prev - 1 + projects.length) % projects.length)}
+              className="w-12 h-12 rounded-full border border-border flex items-center justify-center
+                         text-muted-foreground hover:text-foreground hover:border-muted-foreground 
+                         transition-all duration-300"
+              aria-label="Previous project"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            <div className="flex gap-2">
+              {projects.map((_, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => setActiveProject(idx)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    activeProject === idx 
+                      ? 'bg-foreground w-8' 
+                      : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                  }`}
+                  aria-label={`Go to project ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            <button 
+              onClick={() => setActiveProject(prev => (prev + 1) % projects.length)}
+              className="w-12 h-12 rounded-full border border-border flex items-center justify-center
+                         text-muted-foreground hover:text-foreground hover:border-muted-foreground 
+                         transition-all duration-300"
+              aria-label="Next project"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
 
 export default Projects;
