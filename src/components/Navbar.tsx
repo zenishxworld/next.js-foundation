@@ -30,7 +30,7 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
-    { name: 'Work', path: '/work' },
+    { name: 'Work', path: '/#projects', isScroll: true },
     { name: 'Careers', path: '/careers' },
   ];
 
@@ -61,18 +61,29 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={cn(
-                    "px-4 py-2 text-sm transition-colors duration-300 rounded-full hover:bg-secondary",
-                    location.pathname === link.path 
-                      ? "text-foreground" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {link.name}
-                </Link>
+                link.isScroll ? (
+                  <button
+                    key={link.name}
+                    onClick={() => scrollToSection('projects')}
+                    className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground 
+                               transition-colors duration-300 rounded-full hover:bg-secondary"
+                  >
+                    {link.name}
+                  </button>
+                ) : (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={cn(
+                      "px-4 py-2 text-sm transition-colors duration-300 rounded-full hover:bg-secondary",
+                      location.pathname === link.path 
+                        ? "text-foreground" 
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {link.name}
+                  </Link>
+                )
               ))}
               
               <button 
@@ -131,18 +142,30 @@ const Navbar = () => {
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ delay: 0.1 + index * 0.05 }}
                 >
-                  <Link
-                    to={link.path}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={cn(
-                      "text-3xl font-display font-bold transition-colors",
-                      location.pathname === link.path 
-                        ? "text-foreground" 
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {link.name}
-                  </Link>
+                  {link.isScroll ? (
+                    <button
+                      onClick={() => {
+                        scrollToSection('projects');
+                        setIsMenuOpen(false);
+                      }}
+                      className="text-3xl font-display font-bold text-foreground hover:text-muted-foreground transition-colors"
+                    >
+                      {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={cn(
+                        "text-3xl font-display font-bold transition-colors",
+                        location.pathname === link.path 
+                          ? "text-foreground" 
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
               
