@@ -1,14 +1,14 @@
-import { ArrowRight, Globe, Smartphone, Bot, Palette, Cloud, ShoppingCart, MessageSquare, Code, Zap, CheckCircle, Rocket } from "lucide-react";
+import { ArrowRight, Globe, Smartphone, Bot, Palette, Cloud, ShoppingCart, MessageSquare, Code, Zap, Rocket } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
+import { TiltCard, MagneticButton, StaggerContainer, StaggerItem } from "./ui/micro-interactions";
 
 const Features = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  const scrollToContact = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const scrollToContact = () => {
     const contactSection = document.getElementById('contact');
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
@@ -16,57 +16,20 @@ const Features = () => {
   };
 
   const services = [
-    {
-      icon: <Globe className="w-6 h-6" />,
-      title: "Web Development",
-      description: "High-performance websites, dashboards, and SaaS apps with clean architecture and fast load times.",
-    },
-    {
-      icon: <Smartphone className="w-6 h-6" />,
-      title: "Mobile Apps",
-      description: "Cross-platform Android & iOS apps with smooth UX, offline support, and scalable integrations.",
-    },
-    {
-      icon: <Bot className="w-6 h-6" />,
-      title: "AI & Automation",
-      description: "AI chatbots, workflow automation, and smart features that reduce manual work.",
-    },
-    {
-      icon: <Palette className="w-6 h-6" />,
-      title: "UI/UX Design",
-      description: "Wireframes, prototypes, and design systems that make your product intuitive and beautiful.",
-    },
-    {
-      icon: <Cloud className="w-6 h-6" />,
-      title: "Cloud & Backend",
-      description: "Robust APIs, authentication, databases — built for security, speed, and scale.",
-    },
-    {
-      icon: <ShoppingCart className="w-6 h-6" />,
-      title: "eCommerce",
-      description: "Custom stores, payment flows, and analytics with reliable order workflows.",
-    },
+    { icon: <Globe className="w-6 h-6" />, title: "Web Development", description: "High-performance websites, dashboards, and SaaS apps with clean architecture." },
+    { icon: <Smartphone className="w-6 h-6" />, title: "Mobile Apps", description: "Cross-platform Android & iOS apps with smooth UX and scalable integrations." },
+    { icon: <Bot className="w-6 h-6" />, title: "AI & Automation", description: "AI chatbots, workflow automation, and smart features that reduce manual work." },
+    { icon: <Palette className="w-6 h-6" />, title: "UI/UX Design", description: "Wireframes, prototypes, and design systems that make your product beautiful." },
+    { icon: <Cloud className="w-6 h-6" />, title: "Cloud & Backend", description: "Robust APIs, authentication, databases — built for security and scale." },
+    { icon: <ShoppingCart className="w-6 h-6" />, title: "eCommerce", description: "Custom stores, payment flows, and analytics with reliable workflows." },
   ];
 
   const processSteps = [
-    { number: "01", title: "Discover", description: "We uncover what drives your brand through purpose, clarity, audience insight and business focus.", icon: <MessageSquare className="w-5 h-5" /> },
-    { number: "02", title: "Request", description: "Submit unlimited design requests directly to us. No meetings needed unless you want to chat.", icon: <Code className="w-5 h-5" /> },
-    { number: "03", title: "Create", description: "We design and develop at speed. Most requests are delivered in just a few days.", icon: <Zap className="w-5 h-5" /> },
-    { number: "04", title: "Activate", description: "Your brand is now live. We provide the assets and support you need to grow.", icon: <Rocket className="w-5 h-5" /> },
+    { number: "01", title: "Discover", description: "We uncover what drives your brand through purpose, clarity, and business focus.", icon: <MessageSquare className="w-5 h-5" /> },
+    { number: "02", title: "Request", description: "Submit unlimited design requests directly to us. No meetings needed.", icon: <Code className="w-5 h-5" /> },
+    { number: "03", title: "Create", description: "We design and develop at speed. Most requests delivered in days.", icon: <Zap className="w-5 h-5" /> },
+    { number: "04", title: "Activate", description: "Your brand is now live. We provide assets and support to grow.", icon: <Rocket className="w-5 h-5" /> },
   ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  };
 
   return (
     <>
@@ -80,7 +43,12 @@ const Features = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
-            <span className="pill mb-6">What We Do</span>
+            <motion.span 
+              className="pill mb-6 inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              What We Do
+            </motion.span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
               We help brands grow with<br />
               <span className="text-muted-foreground">standout design</span>
@@ -90,28 +58,31 @@ const Features = () => {
             </p>
           </motion.div>
 
-          {/* Services Grid */}
-          <motion.div 
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-          >
+          {/* Services Grid with Tilt Cards */}
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
-              <motion.div 
-                key={index}
-                className="group p-8 rounded-2xl bg-card border border-border/50 card-hover"
-                variants={itemVariants}
-              >
-                <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center text-foreground mb-6
-                              group-hover:bg-foreground group-hover:text-background transition-colors duration-300">
-                  {service.icon}
-                </div>
-                <h3 className="text-xl font-display font-bold text-foreground mb-3">{service.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{service.description}</p>
-              </motion.div>
+              <StaggerItem key={index}>
+                <TiltCard className="group h-full">
+                  <motion.div 
+                    className="p-8 rounded-2xl bg-card border border-border/50 h-full glow-on-hover"
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <motion.div 
+                      className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center text-foreground mb-6
+                                group-hover:bg-foreground group-hover:text-background transition-colors duration-300"
+                      whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {service.icon}
+                    </motion.div>
+                    <h3 className="text-xl font-display font-bold text-foreground mb-3">{service.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{service.description}</p>
+                  </motion.div>
+                </TiltCard>
+              </StaggerItem>
             ))}
-          </motion.div>
+          </StaggerContainer>
         </div>
       </section>
 
@@ -125,7 +96,12 @@ const Features = () => {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
           >
-            <span className="pill mb-6 italic">Our Process, Explained</span>
+            <motion.span 
+              className="pill mb-6 italic inline-block"
+              whileHover={{ scale: 1.05 }}
+            >
+              Our Process, Explained
+            </motion.span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-foreground">
               Here's how it works
             </h2>
@@ -135,21 +111,37 @@ const Features = () => {
             {processSteps.map((step, index) => (
               <motion.div 
                 key={index}
-                className="relative"
+                className="relative group"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <div className="p-8 rounded-2xl bg-card border border-border/50 h-full">
-                  <div className="text-5xl font-display font-bold text-muted/50 mb-4">{step.number}</div>
+                <motion.div 
+                  className="p-8 rounded-2xl bg-card border border-border/50 h-full glow-on-hover"
+                  whileHover={{ y: -5, borderColor: 'hsl(0 0% 30%)' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div 
+                    className="text-5xl font-display font-bold text-muted/50 mb-4"
+                    whileHover={{ scale: 1.1, color: 'hsl(0 0% 40%)' }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {step.number}
+                  </motion.div>
                   <h3 className="text-xl font-display font-bold text-foreground mb-3">{step.title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
-                </div>
+                </motion.div>
                 
-                {/* Connector line */}
+                {/* Animated connector line */}
                 {index < 3 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-border" />
+                  <motion.div 
+                    className="hidden lg:block absolute top-1/2 -right-4 w-8 h-px bg-border"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                  />
                 )}
               </motion.div>
             ))}
@@ -162,15 +154,22 @@ const Features = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <button
+            <MagneticButton
               onClick={scrollToContact}
               className="group px-8 py-4 bg-foreground text-background rounded-full font-medium 
-                         transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-foreground/20
+                         transition-all duration-300 hover:shadow-lg hover:shadow-foreground/20
                          inline-flex items-center gap-2"
+              strength={0.2}
             >
               Start Your Project
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+              <motion.span
+                className="inline-block"
+                whileHover={{ x: 4 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+            </MagneticButton>
           </motion.div>
         </div>
       </section>
